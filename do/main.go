@@ -295,13 +295,13 @@ func main() {
 	}
 
 	if flgBuildRelease {
-		failIfNoCertPwd()
+		// failIfNoCertPwd()
 		detectVersions()
 		buildRelease()
-		if flgUpload {
-			s3UploadBuildMust(buildTypeRel)
-			spacesUploadBuildMust(buildTypeRel)
-		}
+		//if flgUpload {
+			//s3UploadBuildMust(buildTypeRel)
+			//spacesUploadBuildMust(buildTypeRel)
+		//}
 		return
 	}
 

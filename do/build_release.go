@@ -12,12 +12,12 @@ func buildRelease() {
 	s := fmt.Sprintf("buidling release version %s", ver)
 	defer makePrintDuration(s)()
 
-	verifyGitCleanMust()
-	verifyOnReleaseBranchMust()
-	verifyTranslationsMust()
+	//verifyGitCleanMust()
+	//verifyOnReleaseBranchMust()
+	//verifyTranslationsMust()
 
-	verifyBuildNotInS3ShortMust(buildTypeRel)
-	verifyBuildNotInSpacesShortMust(buildTypeRel)
+	//verifyBuildNotInS3ShortMust(buildTypeRel)
+	//verifyBuildNotInSpacesShortMust(buildTypeRel)
 
 	clean()
 	setBuildConfigRelease()

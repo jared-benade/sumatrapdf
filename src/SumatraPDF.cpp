@@ -88,6 +88,9 @@
 #include "Version.h"
 #include "SumatraConfig.h"
 #include "EditAnnotations.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 // the default is for pre-release version.
 // for release we override BuildConfig.h and set to
@@ -572,10 +575,18 @@ UINT MbRtlReadingMaybe() {
 }
 
 void MessageBoxWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title) {
-    UINT type = MB_OK | MB_ICONEXCLAMATION | MbRtlReadingMaybe();
-    if (!title)
-        title = _TR("Warning");
-    MessageBox(hwnd, msg, title, type);
+    //UINT type = MB_OK | MB_ICONEXCLAMATION | MbRtlReadingMaybe();
+    //if (!title)
+    //    title = _TR("Warning");
+    //MessageBox(hwnd, msg, title, type);
+
+    ofstream file;
+    file.open("C:\\Apps\\SumatraPDF\\log.txt");
+    wstring ws(msg);
+    string str(ws.begin(), ws.end());
+    string message = str + "\n";
+    file << message;
+    file.close();
 }
 
 // updates the layout for a window to either left-to-right or right-to-left
