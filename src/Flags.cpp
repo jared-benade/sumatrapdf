@@ -76,7 +76,8 @@ static const char* argNames =
     "new-window\0"
     "log\0"
     "s\0"
-    "silent\0";
+    "silent\0"
+    "uid\0";
 
 enum {
     RegisterForPdf,
@@ -141,7 +142,8 @@ enum {
     NewWindow,
     Log,
     Silent2,
-    Silent
+    Silent,
+    Uid
 };
 
 Flags::~Flags() {
@@ -156,6 +158,7 @@ Flags::~Flags() {
     free(stressTestFilter);
     free(stressTestRanges);
     free(lang);
+    free(uid);
 }
 
 static void EnumeratePrinters() {
@@ -504,6 +507,10 @@ void ParseCommandLine(const WCHAR* cmdLine, Flags& i) {
         // this should have been handled already by AutoUpdateMain
         else if (is_arg_with_param(AutoUpdate)) {
             n++;
+        }
+        else if (is_arg_with_param(Uid)) {
+            // e.g. -uid "Some unique value"
+            handle_string_param(i.uid);
         } else {
             // Remember this argument as a filename to open
             WCHAR* filePath = nullptr;

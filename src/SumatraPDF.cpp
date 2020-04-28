@@ -574,14 +574,21 @@ UINT MbRtlReadingMaybe() {
     return 0;
 }
 
-void MessageBoxWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title) {
+void HandleWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title, const WCHAR* uid) {
     //UINT type = MB_OK | MB_ICONEXCLAMATION | MbRtlReadingMaybe();
     //if (!title)
     //    title = _TR("Warning");
     //MessageBox(hwnd, msg, title, type);
 
+    if (!uid) {
+        uid = _TR("");
+    }
+
+    auto cs = wstring(uid);
+    string string_uid(cs.begin(), cs.end());
+    auto path = "C:\\Apps\\SumatraPDF\\log(" + std::string(string_uid) + ").txt";
     ofstream file;
-    file.open("C:\\Apps\\SumatraPDF\\log.txt");
+    file.open(path);
     wstring ws(msg);
     string str(ws.begin(), ws.end());
     string message = str + "\n";
@@ -2021,7 +2028,7 @@ static DWORD ShowAutoUpdateDialog(HWND hParent, HttpRsp* rsp, bool silent) {
     if (!hasUpdate) {
         /* if automated => don't notify that there is no new version */
         if (!silent) {
-            MessageBoxWarning(hParent, _TR("You have the latest version."), _TR("SumatraPDF Update"));
+            HandleWarning(hParent, _TR("You have the latest version."), _TR("SumatraPDF Update"));
         }
         return 0;
     }
@@ -2066,7 +2073,7 @@ static void ProcessAutoUpdateCheckResult(HWND hwnd, HttpRsp* rsp, bool autoCheck
     if (error != 0 && !autoCheck) {
         // notify the user about network error during a manual update check
         AutoFreeWstr msg(str::Format(_TR("Can't connect to the Internet (error %#x)."), error));
-        MessageBoxWarning(hwnd, msg, _TR("SumatraPDF Update"));
+        HandleWarning(hwnd, msg, _TR("SumatraPDF Update"));
     }
 }
 
@@ -2617,7 +2624,7 @@ static void OnMenuSaveAs(WindowInfo* win) {
         if (errorMsg) {
             msg = errorMsg.get();
         }
-        MessageBoxWarning(win->hwndFrame, msg);
+        HandleWarning(win->hwndFrame, msg);
     }
 
     if (ok && IsUntrustedFile(win->ctrl->FilePath(), gPluginURL) && !convertToTXT) {
