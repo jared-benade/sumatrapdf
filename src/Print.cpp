@@ -483,7 +483,7 @@ So far have tested printing from XP to
  - Lexmark Z515 inkjet, which should cover most bases.
 */
 enum { MAXPAGERANGES = 10 };
-void OnMenuPrint(WindowInfo* win, bool waitForCompletion, const WCHAR* uid) {
+void OnMenuPrint(WindowInfo* win, bool waitForCompletion, const WCHAR* logFilePath) {
     // we remember some printer settings per process
     static ScopedMem<DEVMODE> defaultDevMode;
     static PrintScaleAdv defaultScaleAdv = PrintScaleAdv::Shrink;
@@ -592,7 +592,7 @@ void OnMenuPrint(WindowInfo* win, bool waitForCompletion, const WCHAR* uid) {
                error code, which we could look at here if we wanted.
                for now just warn the user that printing has stopped
                becasue of an error */
-            HandleWarning(win->hwndFrame, _TR("Couldn't initialize printer"), _TR("Printing problem."), uid);
+            HandleWarning(win->hwndFrame, _TR("Couldn't initialize printer"), _TR("Printing problem."), logFilePath);
         }
         goto Exit;
     }
@@ -820,7 +820,7 @@ static void ApplyPrintSettings(const WCHAR* printerName, const WCHAR* settings, 
     }
 }
 
-bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const WCHAR* settings, const WCHAR* uid) {
+bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const WCHAR* settings, const WCHAR* logFilePath) {
     bool ok = false;
     if (!HasPermission(Perm_PrinterAccess)) {
         return false;
@@ -834,7 +834,7 @@ bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const
 
     if (!engine) {
         if (displayErrors) {
-            HandleWarning(nullptr, _TR("Cannot print this file"), _TR("Printing problem."), uid);
+            HandleWarning(nullptr, _TR("Cannot print this file"), _TR("Printing problem."), logFilePath);
         }
         return false;
     }
@@ -849,7 +849,7 @@ bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const
     BOOL res = OpenPrinterW(printerName, &printer, nullptr);
     if (!res) {
         if (displayErrors) {
-            HandleWarning(nullptr, _TR("Printer with given name doesn't exist"), _TR("Printing problem."), uid);
+            HandleWarning(nullptr, _TR("Printer with given name doesn't exist"), _TR("Printing problem."), logFilePath);
         }
         return false;
     }
@@ -871,7 +871,7 @@ bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const
     structSize = DocumentPropertiesW(nullptr, printer, printerName, nullptr, nullptr, 0);
     if (structSize < sizeof(DEVMODEW)) {
         if (displayErrors) {
-            HandleWarning(nullptr, _TR("Could not obtain Printer properties"), _TR("Printing problem."), uid);
+            HandleWarning(nullptr, _TR("Could not obtain Printer properties"), _TR("Printing problem."), logFilePath);
         }
         goto Exit;
     }
@@ -881,7 +881,7 @@ bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const
     LONG ret = DocumentPropertiesW(nullptr, printer, printerName, devMode, nullptr, DM_OUT_BUFFER);
     if (IDOK != ret) {
         if (displayErrors) {
-            HandleWarning(nullptr, _TR("Could not obtain Printer properties"), _TR("Printing problem."), uid);
+            HandleWarning(nullptr, _TR("Could not obtain Printer properties"), _TR("Printing problem."), logFilePath);
         }
         goto Exit;
     }
@@ -902,7 +902,7 @@ bool PrintFile(EngineBase* engine, WCHAR* printerName, bool displayErrors, const
         PrintData pd(engine, infoData, devMode, ranges, advanced);
         ok = PrintToDevice(pd);
         if (!ok && displayErrors) {
-            HandleWarning(nullptr, _TR("Couldn't initialize printer"), _TR("Printing problem."), uid);
+            HandleWarning(nullptr, _TR("Couldn't initialize printer"), _TR("Printing problem."), logFilePath);
         }
     }
 
@@ -914,19 +914,19 @@ Exit:
     return ok;
 }
 
-bool PrintFile(const WCHAR* fileName, WCHAR* printerName, bool displayErrors, const WCHAR* settings, const WCHAR* uid) {
+bool PrintFile(const WCHAR* fileName, WCHAR* printerName, bool displayErrors, const WCHAR* settings, const WCHAR* logFilePath) {
     logf(L"PrintFile: file: '%s', printer: '%s'\n", fileName, printerName);
     WCHAR* fileName2 = path::Normalize(fileName);
     EngineBase* engine = EngineManager::CreateEngine(fileName2);
     if (!engine) {
         if (displayErrors) {
             WCHAR* msg = str::Format(L"Couldn't open file '%s' for printing", fileName);
-            HandleWarning(nullptr, msg, L"Error", uid);
+            HandleWarning(nullptr, msg, L"Error", logFilePath);
             free(msg);
         }
         return false;
     }
-    bool ok = PrintFile(engine, printerName, displayErrors, settings, uid);
+    bool ok = PrintFile(engine, printerName, displayErrors, settings, logFilePath);
     delete engine;
     free(fileName2);
     return ok;

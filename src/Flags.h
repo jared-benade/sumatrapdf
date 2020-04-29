@@ -19,7 +19,7 @@ class Flags {
     bool exitWhenDone = false;
     bool printDialog = false;
     WCHAR* printerName = nullptr;
-    WCHAR* uid = nullptr;
+    WCHAR* logFilePath = nullptr;
     WCHAR* printSettings = nullptr;
     WCHAR* forwardSearchOrigin = nullptr;
     int forwardSearchLine = 0;

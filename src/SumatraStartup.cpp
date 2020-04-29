@@ -941,7 +941,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
         // note: this prints all PDF files. Another option would be to
         // print only the first one
         for (size_t n = 0; n < i.fileNames.size(); n++) {
-            bool ok = PrintFile(i.fileNames.at(n), i.printerName, !i.silent, i.printSettings, i.uid);
+            bool ok = PrintFile(i.fileNames.at(n), i.printerName, !i.silent, i.printSettings, i.logFilePath);
             if (!ok)
                 retCode++;
         }
@@ -1023,7 +1023,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
             continue;
         }
         if (i.printDialog) {
-            OnMenuPrint(win, i.exitWhenDone, i.uid);
+            OnMenuPrint(win, i.exitWhenDone, i.logFilePath);
         }
     }
 

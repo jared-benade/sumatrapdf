@@ -77,7 +77,7 @@ static const char* argNames =
     "log\0"
     "s\0"
     "silent\0"
-    "uid\0";
+    "log-file-path\0";
 
 enum {
     RegisterForPdf,
@@ -143,7 +143,7 @@ enum {
     Log,
     Silent2,
     Silent,
-    Uid
+    LogFilePath
 };
 
 Flags::~Flags() {
@@ -158,7 +158,7 @@ Flags::~Flags() {
     free(stressTestFilter);
     free(stressTestRanges);
     free(lang);
-    free(uid);
+    free(logFilePath);
 }
 
 static void EnumeratePrinters() {
@@ -508,9 +508,9 @@ void ParseCommandLine(const WCHAR* cmdLine, Flags& i) {
         else if (is_arg_with_param(AutoUpdate)) {
             n++;
         }
-        else if (is_arg_with_param(Uid)) {
-            // e.g. -uid "Some unique value"
-            handle_string_param(i.uid);
+        else if (is_arg_with_param(LogFilePath)) {
+            // e.g. -log-file-path "Some\\Log\\File\\Path"
+            handle_string_param(i.logFilePath);
         } else {
             // Remember this argument as a filename to open
             WCHAR* filePath = nullptr;

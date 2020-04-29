@@ -574,26 +574,21 @@ UINT MbRtlReadingMaybe() {
     return 0;
 }
 
-void HandleWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title, const WCHAR* uid) {
-    //UINT type = MB_OK | MB_ICONEXCLAMATION | MbRtlReadingMaybe();
-    //if (!title)
-    //    title = _TR("Warning");
-    //MessageBox(hwnd, msg, title, type);
-
-    if (!uid) {
-        uid = _TR("");
+void HandleWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title, const WCHAR* logFilePath) {
+    if (logFilePath) {
+        ofstream file;
+        file.open(logFilePath);
+        wstring ws(msg);
+        string str(ws.begin(), ws.end());
+        string message = str + "\n";
+        file << message;
+        file.close();
+    } else {
+        UINT type = MB_OK | MB_ICONEXCLAMATION | MbRtlReadingMaybe();
+        if (!title)
+           title = _TR("Warning");
+        MessageBox(hwnd, msg, title, type);
     }
-
-    auto cs = wstring(uid);
-    string string_uid(cs.begin(), cs.end());
-    auto path = "C:\\Apps\\SumatraPDF\\log(" + std::string(string_uid) + ").txt";
-    ofstream file;
-    file.open(path);
-    wstring ws(msg);
-    string str(ws.begin(), ws.end());
-    string message = str + "\n";
-    file << message;
-    file.close();
 }
 
 // updates the layout for a window to either left-to-right or right-to-left

@@ -161,7 +161,7 @@ WindowInfo* LoadDocument(LoadArgs& args);
 WindowInfo* CreateAndShowWindowInfo(SessionData* data = nullptr);
 
 UINT MbRtlReadingMaybe();
-void HandleWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title = nullptr, const WCHAR* uid = nullptr);
+void HandleWarning(HWND hwnd, const WCHAR* msg, const WCHAR* title = nullptr, const WCHAR* logFilePath = nullptr);
 void UpdateCursorPositionHelper(WindowInfo* win, Point pos, NotificationWnd* wnd);
 bool DocumentPathExists(const WCHAR* path);
 void EnterFullScreen(WindowInfo* win, bool presentation = false);
